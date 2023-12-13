@@ -87,7 +87,7 @@ check_7:
 end:
 }
 
-macro display_grid
+macro display_matrix
 {
     clear
     write 1, matrix, matrix_size   
