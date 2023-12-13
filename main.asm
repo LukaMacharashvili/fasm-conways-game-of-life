@@ -7,7 +7,7 @@ matrix_cols equ 40
 matrix_rows equ 20
 test_str db 'TEST', 10
 new_line db 10
-matrix db '##                                      ', 10, '##                                      ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        '
+matrix db '                                        ', 10, '                                        ', 10, '                                        ', 10, '    ##                                  ', 10, '    ##                                  ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        '
 clear_str db 27, '[2J', 27, '[H'
 
 macro write fd, buf, count
@@ -53,10 +53,12 @@ macro cell_not_exists offset
     cmp al, ' '
 }
 
-macro sum_neighbors offset
+macro sum_neighbors offset, temp_val
 {
     mov rcx, 0
 
+;    cmp temp_val, 0
+;    je check_1
     cell_exists offset - 1
     jne check_1
     add rcx, 1
@@ -124,7 +126,7 @@ inner_loop:
     cell_exists rbx
     je exists
 
-    sum_neighbors rbx
+    sum_neighbors rbx, rax
 does_not_exist:
     cmp rcx, 3
     je does_not_exist_add
