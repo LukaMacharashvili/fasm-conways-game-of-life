@@ -3,3 +3,4 @@
 ## TODOs:
 - [ ] Add comments
 - [ ] Current output seems incorrect, check the logic
+- [ ] Use graphics instead of text
