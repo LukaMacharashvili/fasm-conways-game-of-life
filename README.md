@@ -2,5 +2,5 @@
 
 ## TODOs:
 - [ ] Add comments
-- [ ] Current output seems incorrect, check the logic
+- [ ] Add macros for some common structures of game of life
 - [ ] Use graphics instead of text
