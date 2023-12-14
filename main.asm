@@ -2,12 +2,12 @@ format ELF64 executable
 
 SYS_write equ 1
 SYS_exit equ 60
-matrix_size equ 820
+matrix_size equ 800
 matrix_cols equ 40
 matrix_rows equ 20
 test_str db 'TEST', 10
 new_line db 10
-matrix db '                                        ', 10, '                                        ', 10, '                                        ', 10, '    ##                                  ', 10, '    ##                                  ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        ', 10, '                                        '
+matrix db '#####################                   ', '##                                      ', '                                        ', '    ##                                  ', '    ##                                  ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                       #'
 clear_str db 27, '[2J', 27, '[H'
 
 macro write fd, buf, count
@@ -56,9 +56,13 @@ macro cell_not_exists offset
 macro sum_neighbors offset, temp_val
 {
     mov rcx, 0
+    mov r13, matrix_cols
 
-;    cmp temp_val, 0
-;    je check_1
+    mov edx, 0
+    div r13
+    cmp edx, 0
+    je check_1
+
     cell_exists offset - 1
     jne check_1
     add rcx, 1
@@ -75,6 +79,11 @@ check_3:
     jne check_4
     add rcx, 1
 check_4:
+    mov edx, 0
+    div r13
+    cmp edx, 0
+    je check_5
+
     cell_exists offset - matrix_cols - 1
     jne check_5
     add rcx, 1
@@ -83,6 +92,11 @@ check_5:
     jne check_6
     add rcx, 1
 check_6:
+    mov edx, 0
+    div r13
+    cmp edx, 0
+    je check_7
+
     cell_exists offset + matrix_cols - 1
     jne check_7
     add rcx, 1
@@ -95,79 +109,79 @@ last_increment:
 
 macro display_matrix
 {
-    write 1, matrix, matrix_size   
-    write 1, new_line, 1 
+    mov r8, 0
+display_matrix_loop:
+    mov r9, matrix
+    add r9, r8
+
+    write 1, r9, 1
+
+    mov rax, r8
+    add rax, 1
+    mov rdx, 0
+    mov r10, matrix_cols
+
+    div r10
+    cmp rdx, 0
+    jne display_matrix_next_iteration
+
+    write 1, new_line, 1
+
+display_matrix_next_iteration:
+    add r8, 1
+    cmp r8, matrix_size
+    jl display_matrix_loop
 }
 
 segment readable executable
 entry main
 main:
-    display_matrix
-
-    mov r10, 0  ; col counter
+    mov r12, 0
 
 _start:
-    add r10, 1
+    add r12, 1
 
-    mov r9, 0  ; row counter
-outer_loop:
-    ; Initialize column counter
-    mov r8, 0  ; col counter
-
-inner_loop:
-    ; Calculate the offset for the current cell
-    mov rax, r9         ; row
-    imul rax, matrix_cols
-    add rax, r8         ; col
-    mov rbx, matrix     ; base address of matrix
-    add rbx, rax        ; address of the current cell
+    mov r8, 0
+main_loop:
+    mov r9, matrix
+    add r9, r8
 
     ; logic
-    cell_exists rbx
-    je exists
+;    cell_exists r9
+;    je exists
+;
+;    sum_neighbors r9, r8
+;does_not_exist:
+;    cmp rcx, 3
+;    je does_not_exist_add
+;    jne end_loop
+;does_not_exist_add:
+;    add_cell r9
+;    jmp end_loop
+;
+;exists:
+;    cmp rcx, 3
+;    jle exists_less_than_3
+;    je end_loop
+;    remove_cell r9
+;    jmp end_loop
+;exists_less_than_3:
+;    cmp rcx, 2
+;    jle exists_less_than_2
+;    jmp end_loop
+;exists_less_than_2:
+;    remove_cell r9
+;    jmp end_loop
 
-    sum_neighbors rbx, rax
-does_not_exist:
-    cmp rcx, 3
-    je does_not_exist_add
-    jne end_inner_loop
-does_not_exist_add:
-    add_cell rbx
-    jmp end_inner_loop
-
-exists:
-    cmp rcx, 3
-    jle exists_less_than_3
-    je end_inner_loop
-    remove_cell rbx
-    jmp end_inner_loop
-exists_less_than_3:
-    cmp rcx, 2
-    jle exists_less_than_2
-    jmp end_inner_loop
-exists_less_than_2:
-    remove_cell rbx
-    jmp end_inner_loop
-
-end_inner_loop:
-    ; Move to the next column
+end_loop:
     add r8, 1
-    cmp r8, matrix_cols
-    jl inner_loop
-
-    ; Move to the next row
-    add r9, 1
-    cmp r9, matrix_rows
-    jl outer_loop
-
-;    mov r11, 100000000
-;delay_loop:
-;    dec r11
-;    jnz delay_loop
+    cmp r8, matrix_size
+    jl main_loop
 
     display_matrix
 
-    cmp r10, 100
-    jle _start
+    cmp r12, 100
+    jne _start
+    write 1, test_str, 5
 
     exit 0
