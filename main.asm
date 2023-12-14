@@ -147,31 +147,31 @@ main_loop:
     add r9, r8
 
     ; logic
-;    cell_exists r9
-;    je exists
-;
-;    sum_neighbors r9, r8
-;does_not_exist:
-;    cmp rcx, 3
-;    je does_not_exist_add
-;    jne end_loop
-;does_not_exist_add:
-;    add_cell r9
-;    jmp end_loop
-;
-;exists:
-;    cmp rcx, 3
-;    jle exists_less_than_3
-;    je end_loop
-;    remove_cell r9
-;    jmp end_loop
-;exists_less_than_3:
-;    cmp rcx, 2
-;    jle exists_less_than_2
-;    jmp end_loop
-;exists_less_than_2:
-;    remove_cell r9
-;    jmp end_loop
+    cell_exists r9
+    je exists
+
+    sum_neighbors r9, r8
+does_not_exist:
+    cmp rcx, 3
+    je does_not_exist_add
+    jne end_loop
+does_not_exist_add:
+    add_cell r9
+    jmp end_loop
+
+exists:
+    cmp rcx, 3
+    jle exists_less_than_3
+    je end_loop
+    remove_cell r9
+    jmp end_loop
+exists_less_than_3:
+    cmp rcx, 2
+    jle exists_less_than_2
+    jmp end_loop
+exists_less_than_2:
+    remove_cell r9
+    jmp end_loop
 
 end_loop:
     add r8, 1
