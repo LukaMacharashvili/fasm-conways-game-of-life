@@ -193,6 +193,13 @@ end_loop:
     copy_matrix matrix1, matrix2
 
     display_matrix
+
+    mov r8, 0
+delay_loop:
+    add r8, 1
+    cmp r8, 100000000 ; Change this value to change the delay
+    jl delay_loop
+
     clear
 
     jmp _start
