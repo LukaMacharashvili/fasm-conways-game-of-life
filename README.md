@@ -7,6 +7,5 @@ fasm main.asm
 ```
 
 ## TODOs:
-- [ ] Add comments
 - [ ] Add macros for some common structures of game of life
 - [ ] Use graphics instead of text
