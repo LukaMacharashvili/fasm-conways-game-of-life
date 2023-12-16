@@ -34,122 +34,126 @@ macro exit code
 
 macro add_cell offset, location
 {
-    mov byte [offset + location], '#'
+    mov byte [location + offset], '#'
 }
 
 macro remove_cell offset, location
 {
-    mov byte [offset + location], ' '
+    mov byte [location + offset], ' '
 }
 
 macro cell_exists offset, location
 {
-    mov al, byte [offset + location]
-    cmp al, '#'
+    mov bl, byte [location + offset]
+    cmp bl, '#'
 }
 
 macro cell_not_exists offset, location
 {
-    mov al, byte [offset + location]
-    cmp al, ' '
+    mov bl, byte [location + offset]
+    cmp bl, ' '
 }
 
 macro sum_neighbors offset, location
 {
-    mov rcx, 0
-    mov r11, matrix_cols
+    mov r10, matrix_cols
 
 check_0:
     mov rax, offset
-    add rax, location
     add rax, 1
     mov rdx, 0
-    div r11
+    div r10
+    mov rax, 0
     cmp rdx, 0
     je check_3
 
-    cell_exists offset, location + 1
+    cell_exists offset + 1, location
     jne check_1
-    add rcx, 1
+    add rax, 1
 check_1:
-    cell_exists offset, location - matrix_cols + 1
+    cell_exists offset - matrix_cols + 1, location
     jne check_2
-    add rcx, 1
+    add rax, 1
 check_2:
-    cell_exists offset, location + matrix_cols + 1
+    cell_exists offset + matrix_cols + 1, location
     jne check_3
-    add rcx, 1
+    add rax, 1
 check_3:
+    push rax
     mov rax, offset
-    add rax, location
     mov rdx, 0
-    div r11
+    div r10
+    pop rax
     cmp rdx, 0
     je check_6
 
-    cell_exists offset, location - 1
+    cell_exists offset - 1, location
     jne check_4
-    add rcx, 1
+    add rax, 1
 check_4:
-    cell_exists offset, location - matrix_cols - 1
+    cell_exists offset - matrix_cols - 1, location
     jne check_5
-    add rcx, 1
+    add rax, 1
 check_5:
-    cell_exists offset, location + matrix_cols - 1
+    cell_exists offset + matrix_cols - 1, location
     jne check_6
-    add rcx, 1
+    add rax, 1
 check_6:
-    cell_exists offset, location - matrix_cols
+    cell_exists offset - matrix_cols, location
     jne check_7
-    add rcx, 1
+    add rax, 1
 check_7:
-    cell_exists offset, location + matrix_cols
+    cell_exists offset + matrix_cols, location
     jne end_of_sum
-    add rcx, 1
+    add rax, 1
 end_of_sum:
     ; Placeholder
 }
 
 macro display_matrix
 {
-    mov r8, 0
+    mov rcx, 0
 display_matrix_loop:
-    mov r9, matrix1
-    add r9, r8
+    mov r8, matrix1
+    add r8, rcx
 
-    write 1, r9, 1
+    push rcx
+    write 1, r8, 1 ; This macro changes rcx for some reason, so we need to push and pop it
+    pop rcx
 
-    mov rax, r8
+    mov rax, rcx
     add rax, 1
     mov rdx, 0
-    mov r11, matrix_cols
+    mov r9, matrix_cols
 
-    div r11
+    div r9
     cmp rdx, 0
     jne display_matrix_next_iteration
 
-    write 1, new_line, 1
+    push rcx
+    write 1, new_line, 1 ; This macro changes rcx for some reason, so we need to push and pop it
+    pop rcx
 
 display_matrix_next_iteration:
-    add r8, 1
-    cmp r8, matrix_size
+    add rcx, 1
+    cmp rcx, matrix_size
     jl display_matrix_loop
 }
 
 macro copy_matrix matrix_target, matrix_source
 {
-    mov r8, 0
+    mov rcx, 0
 copy_matrix_loop:
-    mov r9, matrix_source
-    add r9, r8
-    mov r11, matrix_target
-    add r11, r8
+    mov r8, matrix_source
+    add r8, rcx
+    mov r9, matrix_target
+    add r9, rcx
 
-    mov al, byte [r9]
-    mov byte [r11], al
+    mov bl, byte [r8]
+    mov byte [r9], bl
 
-    add r8, 1
-    cmp r8, matrix_size
+    add rcx, 1
+    cmp rcx, matrix_size
     jl copy_matrix_loop
 }
 
@@ -157,47 +161,46 @@ segment readable executable
 entry main
 main:
 _start:
-    mov r8, 0
+    mov rcx, 0
 main_loop:
-    mov r9, matrix1
-    mov r10, matrix2
+    mov r8, matrix1
+    mov r9, matrix2
 
     ; logic
-    sum_neighbors r8, r9
-    cell_exists r8, r9
+    sum_neighbors rcx, r8
+    cell_exists rcx, r8
     je exists
 
 does_not_exist:
-    cmp rcx, 3
+    cmp rax, 3
     je main_add_cell
     jne end_loop
 main_add_cell:
-    add_cell r8, r10
+    add_cell rcx, r9
     jmp end_loop
 
 exists:
-    cmp rcx, 2
+    cmp rax, 2
     jl main_remove_cell
-    cmp rcx, 3
+    cmp rax, 3
     jg main_remove_cell
     jmp end_loop
 main_remove_cell:
-    remove_cell r8, r10
+    remove_cell rcx, r9
     jmp end_loop
 
 end_loop:
-    add r8, 1
-    cmp r8, matrix_size
+    add rcx, 1
+    cmp rcx, matrix_size
     jl main_loop
 
     copy_matrix matrix1, matrix2
-
     display_matrix
 
-    mov r8, 0
+    mov rcx, 0
 delay_loop:
-    add r8, 1
-    cmp r8, 100000000 ; Change this value to change the delay
+    add rcx, 1
+    cmp rcx, 100000000 ; Change this value to change the delay
     jl delay_loop
 
     clear
