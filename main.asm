@@ -2,9 +2,9 @@ format ELF64 executable
 
 SYS_write equ 1
 SYS_exit equ 60
-matrix_size equ 800
 matrix_cols equ 40
 matrix_rows equ 20
+matrix_size equ matrix_cols * matrix_rows
 test_str db 'TEST', 10
 new_line db 10
 matrix1 db '                                        ', '                                        ', ' #                                      ', '  #                                     ', '###                                     ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        '
@@ -57,14 +57,14 @@ macro cell_not_exists offset, location
 macro sum_neighbors offset, location
 {
     mov rcx, 0
-    mov r10, matrix_cols
+    mov r11, matrix_cols
 
 check_0:
     mov rax, offset
     add rax, location
     add rax, 1
     mov rdx, 0
-    div r10
+    div r11
     cmp rdx, 0
     je check_3
 
@@ -83,7 +83,7 @@ check_3:
     mov rax, offset
     add rax, location
     mov rdx, 0
-    div r10
+    div r11
     cmp rdx, 0
     je check_6
 
@@ -122,9 +122,9 @@ display_matrix_loop:
     mov rax, r8
     add rax, 1
     mov rdx, 0
-    mov r10, matrix_cols
+    mov r11, matrix_cols
 
-    div r10
+    div r11
     cmp rdx, 0
     jne display_matrix_next_iteration
 
@@ -142,11 +142,11 @@ macro copy_matrix matrix_target, matrix_source
 copy_matrix_loop:
     mov r9, matrix_source
     add r9, r8
-    mov r10, matrix_target
-    add r10, r8
+    mov r11, matrix_target
+    add r11, r8
 
     mov al, byte [r9]
-    mov byte [r10], al
+    mov byte [r11], al
 
     add r8, 1
     cmp r8, matrix_size
@@ -160,7 +160,7 @@ _start:
     mov r8, 0
 main_loop:
     mov r9, matrix1
-    mov r11, matrix2
+    mov r10, matrix2
 
     ; logic
     sum_neighbors r8, r9
@@ -172,7 +172,7 @@ does_not_exist:
     je main_add_cell
     jne end_loop
 main_add_cell:
-    add_cell r8, r11
+    add_cell r8, r10
     jmp end_loop
 
 exists:
@@ -182,7 +182,7 @@ exists:
     jg main_remove_cell
     jmp end_loop
 main_remove_cell:
-    remove_cell r8, r11
+    remove_cell r8, r10
     jmp end_loop
 
 end_loop:
