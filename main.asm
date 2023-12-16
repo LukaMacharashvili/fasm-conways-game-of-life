@@ -168,6 +168,13 @@ macro block location
     add_cell matrix_cols + 1, location
 }
 
+macro blinker location
+{
+    add_cell matrix_cols + 0, location
+    add_cell matrix_cols + 1, location
+    add_cell matrix_cols + 2, location
+}
+
 macro gosper_glider_gun
 {
     ; TODO: Implement
@@ -178,8 +185,8 @@ macro init_matrix
     mov r8, matrix1
     mov r9, matrix2
 
-    block r8
-    block r9
+    blinker r8
+    blinker r9
 }
 
 segment readable executable
