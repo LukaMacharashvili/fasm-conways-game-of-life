@@ -5,10 +5,10 @@ SYS_exit equ 60
 matrix_cols equ 40
 matrix_rows equ 20
 matrix_size equ matrix_cols * matrix_rows
-test_str db 'TEST', 10
+test_str db 'Debugging', 10
 new_line db 10
-matrix1 db '                                        ', '                                        ', ' #                                      ', '  #                                     ', '###                                     ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        '
-matrix2 db '                                        ', '                                        ', ' #                                      ', '  #                                     ', '###                                     ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        '
+matrix1 db '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        '
+matrix2 db '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        ', '                                        '
 clear_str db 27, '[2J', 27, '[H'
 
 macro write fd, buf, count
@@ -54,6 +54,7 @@ macro cell_not_exists offset, location
     cmp bl, ' '
 }
 
+; TODO: This macro can not be used twice, because of label conflicts
 macro sum_neighbors offset, location
 {
     mov r10, matrix_cols
@@ -110,6 +111,7 @@ end_of_sum:
     ; Placeholder
 }
 
+; TODO: This macro can not be used twice, because of label conflicts
 macro display_matrix
 {
     mov rcx, 0
@@ -140,6 +142,7 @@ display_matrix_next_iteration:
     jl display_matrix_loop
 }
 
+; TODO: This macro can not be used twice, because of label conflicts
 macro copy_matrix matrix_target, matrix_source
 {
     mov rcx, 0
@@ -157,9 +160,32 @@ copy_matrix_loop:
     jl copy_matrix_loop
 }
 
+macro block location
+{
+    add_cell 0, location
+    add_cell 1, location
+    add_cell matrix_cols, location
+    add_cell matrix_cols + 1, location
+}
+
+macro gosper_glider_gun
+{
+    ; TODO: Implement
+}
+
+macro init_matrix
+{
+    mov r8, matrix1
+    mov r9, matrix2
+
+    block r8
+    block r9
+}
+
 segment readable executable
 entry main
 main:
+    init_matrix
 _start:
     mov rcx, 0
 main_loop:
@@ -200,7 +226,7 @@ end_loop:
     mov rcx, 0
 delay_loop:
     add rcx, 1
-    cmp rcx, 100000000 ; Change this value to change the delay
+    cmp rcx, 999999999 ; Change this value to change the delay
     jl delay_loop
 
     clear
