@@ -175,6 +175,15 @@ macro blinker location
     add_cell matrix_cols + 2, location
 }
 
+macro glider location
+{
+    add_cell 1, location
+    add_cell matrix_cols + 2, location
+    add_cell 2 * matrix_cols, location
+    add_cell 2 * matrix_cols + 1, location
+    add_cell 2 * matrix_cols + 2, location
+}
+
 macro gosper_glider_gun
 {
     ; TODO: Implement
@@ -185,8 +194,8 @@ macro init_matrix
     mov r8, matrix1
     mov r9, matrix2
 
-    blinker r8
-    blinker r9
+    glider r8
+    glider r9
 }
 
 segment readable executable
