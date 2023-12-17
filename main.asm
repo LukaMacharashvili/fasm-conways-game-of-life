@@ -2,8 +2,8 @@ format ELF64 executable
 
 SYS_write equ 1
 SYS_exit equ 60
-matrix_cols equ 40 ; Change this value to change the matrix size
-matrix_rows equ 20 ; Change this value to change the matrix size
+matrix_cols equ 50 ; Change this value to change the matrix size
+matrix_rows equ 50 ; Change this value to change the matrix size
 matrix_size equ matrix_cols * matrix_rows
 test_str db 'Debugging', 10
 new_line db 10
@@ -184,9 +184,51 @@ macro glider location
     add_cell 2 * matrix_cols + 2, location
 }
 
-macro gosper_glider_gun
+macro gosper_glider_gun location
 {
-    ; TODO: Implement
+    ; Left square
+    add_cell 10 * matrix_cols, location
+    add_cell 10 * matrix_cols + 1, location
+    add_cell 11 * matrix_cols, location
+    add_cell 11 * matrix_cols + 1, location
+
+    ; Left thing
+    add_cell 8 * matrix_cols + 12, location
+    add_cell 8 * matrix_cols + 13, location
+    add_cell 9 * matrix_cols + 11, location
+    add_cell 9 * matrix_cols + 15, location
+    add_cell 10 * matrix_cols + 10, location
+    add_cell 10 * matrix_cols + 16, location
+    add_cell 11 * matrix_cols + 10, location
+    add_cell 11 * matrix_cols + 14, location
+    add_cell 11 * matrix_cols + 16, location
+    add_cell 11 * matrix_cols + 17, location
+    add_cell 12 * matrix_cols + 10, location
+    add_cell 12 * matrix_cols + 16, location
+    add_cell 13 * matrix_cols + 11, location
+    add_cell 13 * matrix_cols + 15, location
+    add_cell 14 * matrix_cols + 12, location
+    add_cell 14 * matrix_cols + 13, location
+
+    ; Right thing
+    add_cell 6 * matrix_cols + 24, location
+    add_cell 7 * matrix_cols + 22, location
+    add_cell 7 * matrix_cols + 24, location
+    add_cell 8 * matrix_cols + 20, location
+    add_cell 8 * matrix_cols + 21, location
+    add_cell 9 * matrix_cols + 20, location
+    add_cell 9 * matrix_cols + 21, location
+    add_cell 10 * matrix_cols + 20, location
+    add_cell 10 * matrix_cols + 21, location
+    add_cell 11 * matrix_cols + 22, location
+    add_cell 11 * matrix_cols + 24, location
+    add_cell 12 * matrix_cols + 24, location
+
+    ; Right square
+    add_cell 8 * matrix_cols + 34, location
+    add_cell 8 * matrix_cols + 35, location
+    add_cell 9 * matrix_cols + 34, location
+    add_cell 9 * matrix_cols + 35, location
 }
 
 ; Change this to change the initial state
@@ -195,8 +237,8 @@ macro init_matrix
     mov r8, matrix1
     mov r9, matrix2
 
-    glider r8
-    glider r9
+    gosper_glider_gun r8
+    gosper_glider_gun r9
 }
 
 segment readable executable
@@ -243,7 +285,7 @@ end_loop:
     mov rcx, 0
 delay_loop:
     add rcx, 1
-    cmp rcx, 999999999 ; Change this value to change the delay
+    cmp rcx, 99999999 ; Change this value to change the delay
     jl delay_loop
 
     clear
