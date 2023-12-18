@@ -7,11 +7,7 @@ fasm main.asm
 ```
 
 ## Examples:
-1. Gosper Glider Gun:
-<video width="320" height="240" controls>
-  <source src="examples/gosper_glider_gun.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+1. [Gosper Glider Gun](https://youtu.be/E2tdcUhX9W0)
 
 ## How to use:
 1. Change init_matrix in main.asm to your liking
