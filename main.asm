@@ -195,7 +195,7 @@ macro gosper_glider_gun location
     add_cell 11 * matrix_cols, location
     add_cell 11 * matrix_cols + 1, location
 
-    ; Left thing
+    ; Left
     add_cell 8 * matrix_cols + 12, location
     add_cell 8 * matrix_cols + 13, location
     add_cell 9 * matrix_cols + 11, location
@@ -213,7 +213,7 @@ macro gosper_glider_gun location
     add_cell 14 * matrix_cols + 12, location
     add_cell 14 * matrix_cols + 13, location
 
-    ; Right thing
+    ; Right
     add_cell 6 * matrix_cols + 24, location
     add_cell 7 * matrix_cols + 22, location
     add_cell 7 * matrix_cols + 24, location
