@@ -1,15 +1,18 @@
 format ELF64 executable
 
+debugging_str db 'Debugging', 10
+new_line db 10
+clear_str db 27, '[2J', 27, '[H'
+
 SYS_write equ 1
 SYS_exit equ 60
+
 matrix_cols equ 50 ; Change this value to change the matrix size
 matrix_rows equ 50 ; Change this value to change the matrix size
 matrix_size equ matrix_cols * matrix_rows
-test_str db 'Debugging', 10
-new_line db 10
+
 matrix1 db matrix_size dup(' ')
 matrix2 db matrix_size dup(' ')
-clear_str db 27, '[2J', 27, '[H'
 
 macro write fd, buf, count
 {
