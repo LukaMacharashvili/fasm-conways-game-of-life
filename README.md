@@ -6,9 +6,6 @@ fasm main.asm
 ./main
 ```
 
-## Examples:
-1. [Gosper Glider Gun](https://youtu.be/E2tdcUhX9W0)
-
 ## How to use:
 1. Change init_matrix in main.asm to your liking
 2. Available Conway's Game of Life patterns: Glider, Blinker, Block
